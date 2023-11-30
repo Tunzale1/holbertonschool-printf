@@ -5,7 +5,7 @@
 #include "main.h"
 /**
  *print_char - a function that prints char
- *
+ *@args: number of arguments
  */
 
 void print_char(va_list args)
@@ -17,7 +17,8 @@ void print_char(va_list args)
 
 /**
  *print_string - a function that prints string
- *
+ *@args: number of rgumnts
+ *Return: string
  */
 int print_string(va_list args)
 {
@@ -32,6 +33,23 @@ int print_string(va_list args)
 	{
 		return (write(1, str, strlen(str)));
 	}
+}
+
+
+/**
+ * print_int - function that prints numbers
+ * @args: list of arguments
+ * Return: inetegers
+ */
+int print_int(va_list args)
+{
+	int num = va_arg(args, int);
+	int count = 0;
+	char buffer[12];
+
+	count = snprintf(buffer, sizeof(buffer), "%d", num);
+	write(1, buffer, count);
+	return (count);
 }
 
 /**
@@ -54,6 +72,10 @@ int _printf(const char *format, ...)
 			i++;
 			switch (format[i])
 			{
+				case 'd':
+				case 'i':
+					count += print_int(args);
+					break;
 				case 'c':
 					print_char(args);
 					count++;
@@ -68,16 +90,12 @@ int _printf(const char *format, ...)
 				default:
 					write(1, "%", 1);
 					write(1, &format[i], 1);
-					count += 2;
-			}
-		}
+					count += 2; } }
 		else
 		{
 			write(1, &format[i], 1);
-			count++;
-		}
-		i++;
-	}
+			count++; }
+		i++; }
 	va_end(args);
 	return (count);
 }
