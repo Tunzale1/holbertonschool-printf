@@ -53,6 +53,26 @@ int print_int(va_list args)
 }
 
 /**
+ * print_binary - function that prints numbers in binary
+ * @args: list of arguments
+ * Return: number of characters printed
+ */
+int print_binary(va_list args)
+{
+    unsigned int num = va_arg(args, unsigned int);
+    char buffer[32];
+
+    int i;
+    for (i = 31; i >= 0; i--)
+    {
+        buffer[i] = (num & 1) + '0';
+        num >>= 1;
+    }
+    write(1, buffer, 32);
+
+    return 32;
+}
+/**
  * _printf - function that produces output
  * Return: the number of characters printed
  * @format: character string
@@ -83,6 +103,9 @@ int _printf(const char *format, ...)
 				case 's':
 					count += print_string(args);
 					break;
+				case 'b':
+					count += print_binary(args);
+					break;
 				case '%':
 					write(1, "%", 1);
 					count++;
@@ -97,5 +120,4 @@ int _printf(const char *format, ...)
 			count++; }
 		i++; }
 	va_end(args);
-	return (count);
-}
+	return (count); }
