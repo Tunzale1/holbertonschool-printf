@@ -59,18 +59,23 @@ int print_int(va_list args)
  */
 int print_binary(va_list args)
 {
-    unsigned int num = va_arg(args, unsigned int);
-    char buffer[32];
+	unsigned int num = va_arg(args, unsigned int);
+	char buffer[32];
+	int i;
+	int msb;
 
-    int i;
-    for (i = 31; i >= 0; i--)
-    {
-        buffer[i] = (num & 1) + '0';
-        num >>= 1;
-    }
-    write(1, buffer, 32);
-
-    return 32;
+	for (msb = 31; msb >= 0; msb--)
+	{
+		if ((num >> msb) & 1)
+			break;
+	}
+	for (i = msb; i >= 0; i--)
+	{
+		buffer[i] = (num & 1) + '0';
+		num >>= 1;
+	}
+	write(1, buffer, msb + 1);
+	return (msb + 1);
 }
 /**
  * _printf - function that produces output
