@@ -1,4 +1,4 @@
-.TH man 3 "27 March 2023" "holberton school" "_printf man page"
+.TH man 3 "30 November 2023" "holberton school" "_printf man page"
 .SH NAME
 .B _printf
 - A simple re-creation of the printf function
@@ -20,6 +20,8 @@ The _printf() function returns an integer representing the number of symbols
 printed not counting \0 for the string.
 .SH SEE ALSO
 .I printf(3)
+.SH NOTES
+_printf uses a function called _putchar, that uses the system call write().
 .SH BUGS
 No known bugs.
 .SH AUTHOR

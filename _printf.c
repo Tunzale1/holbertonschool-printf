@@ -17,7 +17,7 @@ void print_char(va_list args)
 
 /**
  *print_string - a function that prints string
- *@args: number of rgumnts
+ *@args: number of arguments
  *Return: string
  */
 int print_string(va_list args)
@@ -39,7 +39,7 @@ int print_string(va_list args)
 /**
  * print_int - function that prints numbers
  * @args: list of arguments
- * Return: inetegers
+ * Return: integers
  */
 int print_int(va_list args)
 {
@@ -53,30 +53,41 @@ int print_int(va_list args)
 }
 
 /**
- * print_binary - function that prints numbers in binary
- * @args: list of arguments
- * Return: number of characters printed
+ * handle_format - format specifiers for _printf
+ * @args: The argument list containing the values
+ * @format: The current format specifier
+ * Return: count
  */
-int print_binary(va_list args)
-{
-	unsigned int num = va_arg(args, unsigned int);
-	char buffer[32];
-	int i;
-	int msb;
 
-	for (msb = 31; msb >= 0; msb--)
+int handle_format(va_list args, char format)
+{
+	int count = 0;
+
+	switch (format)
 	{
-		if ((num >> msb) & 1)
+		case 'd':
+		case 'i':
+			count += print_int(args);
 			break;
+		case 'c':
+			print_char(args);
+			count++;
+			break;
+		case 's':
+			count += print_string(args);
+			break;
+		case '%':
+			write(1, "%", 1);
+			count++;
+			break;
+		default:
+			write(1, "%", 1);
+			write(1, &format, 1);
+			count += 2;
 	}
-	for (i = msb; i >= 0; i--)
-	{
-		buffer[i] = (num & 1) + '0';
-		num >>= 1;
-	}
-	write(1, buffer, msb + 1);
-	return (msb + 1);
+	return (count);
 }
+
 /**
  * _printf - function that produces output
  * Return: the number of characters printed
@@ -95,34 +106,15 @@ int _printf(const char *format, ...)
 		if (format[i] == '%')
 		{
 			i++;
-			switch (format[i])
-			{
-				case 'd':
-				case 'i':
-					count += print_int(args);
-					break;
-				case 'c':
-					print_char(args);
-					count++;
-					break;
-				case 's':
-					count += print_string(args);
-					break;
-				case 'b':
-					count += print_binary(args);
-					break;
-				case '%':
-					write(1, "%", 1);
-					count++;
-					break;
-				default:
-					write(1, "%", 1);
-					write(1, &format[i], 1);
-					count += 2; } }
+			count += handle_format(args, format[i]);
+		}
 		else
 		{
 			write(1, &format[i], 1);
-			count++; }
-		i++; }
+			count++;
+		}
+		i++;
+	}
 	va_end(args);
-	return (count); }
+	return (count);
+}
